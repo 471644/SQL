@@ -1,9 +1,9 @@
-Easy
+Medium
 
 Adobe
-For every customer that bought Photoshop, return a list of their customer_id, and how much they spent in total for other Adobe products excluding Photoshop.
+For every customer that bought Photoshop, return a list of the customers, and the total spent on all the products except for Photoshop products.
 
-Sort your answer by customer_id in ascending order.
+Sort your answer by customer ids in ascending order.
 
 adobe_transactions Table:
 Column Name	Type
@@ -26,7 +26,7 @@ Solution
 This is another example of a task where it is wise to take a step back and break the question into smaller steps. Essentially, we are looking for two things:
 
 Who are the customers who bought Photoshop?
-How much did those users spend on all Adobe products, including photoshop?
+How much did those users spend on all Adobe products, excluding photoshop?
 Thus, let's start by finding all of the customer_ids that bought Photoshop.
 
 SELECT customer_id 
@@ -59,33 +59,3 @@ INNER JOIN adobe_transactions AS filtered
 WHERE original.product <> 'Photoshop'
 GROUP BY original.customer_id
 ORDER BY original.customer_id;
-
----- My Solution -----
--- no data pre-processing required
--- no null records available
--- filter for customer who bought photoshop
--- filter on product exclue photoshop
--- sum revenue
-
-SELECT 
-  adobe_transactions.customer_id,
-  SUM(adobe_transactions.revenue)
-FROM
-  adobe_transactions
-WHERE
-    adobe_transactions.customer_id IN 
-        (
-          SELECT
-            DISTINCT adobe_transactions.customer_id
-          FROM
-            adobe_transactions
-          WHERE
-            adobe_transactions.product IN ('Photoshop')
-        )
-  AND
-    
-    adobe_transactions.product NOT IN ('Photoshop')
-GROUP BY 1
-ORDER BY 1 ASC
-  
-
